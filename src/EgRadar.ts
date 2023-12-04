@@ -40,7 +40,7 @@ export class EgRadar {
     public onEntryHoverOut!: Function;
 
     constructor(private _config: RadarConfig) {
-        this._styleConfig = { ...DEFAULT_CONFIG, ..._config.style};
+        this._styleConfig = { ...DEFAULT_CONFIG, ..._config.style };
         this.rand = new PseudoRand(this._styleConfig.seed!);
 
         this.initRings();
@@ -66,7 +66,7 @@ export class EgRadar {
     }
 
     private selectSector(sector: Sector) {
-        this._selectedSector = sector
+        this._selectedSector = sector;
     }
 
     private selectEntry(entry: RadarEntry) {
@@ -219,7 +219,7 @@ export class EgRadar {
             (entry: RadarEntry) => this.config.onSelect?.call(this, entry)
         );
 
-        this.onSectorSelect = (entry: RadarEntry) => this.selectSector.call(this, entry.sector);
+        this.onSectorSelect = (sector: Sector) => this.selectSector.call(this,sector);
         this.onEntryHover = (entry: RadarEntry) => this.config.onHover?.call(this, entry);
         this.onEntryHoverOut = (entry: RadarEntry) => this.config.onHoverOut?.call(this, entry);
     }

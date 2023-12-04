@@ -216,7 +216,6 @@ export class RadarRenderer {
     private highlightSector(sector: Sector) {
         this.svg.selectAll(".blip")
             .style("opacity", (entry: any) => sector.id == entry.sector?.id ? 1 : 0.3);
-        console.log(this.radar.style)
         if (this.radar.style.showSectorLabels) {
             for (let i = 0; i < this.radar.sectors.length; i++) {
                 this.svg.select("#legendText" + i + "_" + this.svgId)
