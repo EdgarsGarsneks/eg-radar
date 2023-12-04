@@ -159,13 +159,14 @@ export class RadarRenderer {
         this.tooltip.append("rect")
             .attr("rx", 4)
             .attr("ry", 4)
+            .style("fill", this.radar.style.tooltip?.background)
             .style("opacity", 1)
 
         this.tooltip.append("text")
-            .style("font-family", this.radar.style.font)
-            .style("font-size", "15px")
-            .style("fill", "white")
             .text("")
+            .style("font-family", this.radar.style.font)
+            .style("font-size", `${this.radar.style.tooltip?.fontSize}px`)
+            .style("fill", this.radar.style.tooltip?.fontColor)
             .style("pointer-events", "none")
             .style("user-select", "none");
     }
@@ -226,15 +227,16 @@ export class RadarRenderer {
 
     private showTooltip(entry: RadarEntry) {
         if (entry) {
+            let offset = 5;
             this.tooltip.style("opacity", 1);
             let text = this.tooltip.select("text").text((entry.id + 1) + ". " + entry.label)
             let bbox = (text.node() as SVGAElement).getBBox();
             if (bbox) {
-                text.attr("transform", `translate(5, ${bbox.height / 2 + 10})`)
-                this.tooltip.attr("transform", `translate(${entry.point.x + 15},${entry.point.y + 5})`)
+                text.attr("transform", `translate(${offset}, ${(bbox.height + this.config.style?.tooltip?.fontSize! + offset) / 2})`)
+                this.tooltip.attr("transform", `translate(${entry.point.x + this.config.style?.tooltip?.fontSize! / 2 + offset}, ${entry.point.y + offset})`)
                 this.tooltip.select("rect")
-                    .attr("width", bbox.width + 10)
-                    .attr("height", bbox.height + 10)
+                    .attr("width", bbox.width + offset * 2)
+                    .attr("height", bbox.height + offset * 2)
             }
         }
     }

@@ -114,7 +114,8 @@ describe('RadarRenderer', () => {
             style: {
                 background: "#123456", lineColor: "#456", sectorLabelColor: "#789",
                 blips: { r: 10, fontSize: 10 },
-                font: "Arial"
+                font: "Arial",
+                tooltip: { background: "#abc", fontSize: 15, fontColor: "#def" }
             }
         };
         (d3.select as jest.Mock).mockClear();
@@ -520,12 +521,13 @@ describe('RadarRenderer', () => {
         expect(tooltipRect._attributes['rx']).toEqual(4);
         expect(tooltipRect._attributes['ry']).toEqual(4);
         expect(tooltipRect._styles['opacity']).toEqual(1);
+        expect(tooltipRect._styles['fill']).toEqual(config.style?.tooltip?.background);
 
         expect(tooltipText._name).toEqual("text");
         expect(tooltipText._text).toEqual(text);
         expect(tooltipText._styles['font-family']).toEqual(config.style?.font);
-        expect(tooltipText._styles['font-size']).toEqual("15px");
-        expect(tooltipText._styles['fill']).toEqual("white");
+        expect(tooltipText._styles['font-size']).toEqual(config.style?.tooltip?.fontSize + "px");
+        expect(tooltipText._styles['fill']).toEqual(config.style?.tooltip?.fontColor);
         expect(tooltipText._styles['pointer-events']).toEqual("none");
         expect(tooltipText._styles['user-select']).toEqual("none");
     }

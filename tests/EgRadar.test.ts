@@ -221,6 +221,11 @@ describe('EgRadar entry layout', () => {
                 r: 12,
                 fontSize: 12
             },
+            tooltip:{
+                background: 'black',
+                fontColor: 'white',
+                fontSize: 15
+            },
             showSectorLabels: true,
             showRingLabels: true,
             font: 'Arial, Helvetica'

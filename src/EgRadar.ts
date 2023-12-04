@@ -19,6 +19,11 @@ const DEFAULT_CONFIG: StyleConfig = {
         offset: 15,
         fontSize: 12
     },
+    tooltip: {
+        background: "black",
+        fontColor: "white",
+        fontSize: 15
+    },
     seed: Math.random() * 1000
 }
 

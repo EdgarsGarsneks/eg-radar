@@ -10,5 +10,10 @@ export interface StyleConfig {
         offset?: number;
         fontSize?: number;
     },
+    tooltip?: {
+        background?: string;
+        fontColor?: string;
+        fontSize?: number;
+    }
     seed?: number;
 }
