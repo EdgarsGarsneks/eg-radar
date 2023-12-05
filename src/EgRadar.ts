@@ -10,21 +10,30 @@ import { all } from "deepmerge";
 
 
 const DEFAULT_CONFIG: StyleConfig = {
-    showSectorLabels: true,
-    showRingLabels: true,
     background: "#00000000",
     lineColor: "gray",
-    sectorLabelColor: "black",
     font: "Arial, Helvetica",
     blips: {
         r: 12,
         offset: 15,
-        fontSize: 12
+        fontSize: 12,
+        textColor: "white"
     },
     tooltip: {
         background: "black",
-        color: "white",
+        textColor: "white",
         fontSize: 15
+    },
+    rings: {
+        showLabels: true,
+        showCurvedLabels: true,
+        showBackground: false,
+        fontSize: 30
+    },
+    sectors: {
+        showLabels: true,
+        textColor: "black",
+        fontSize: 30
     },
     seed: Math.random() * 1000
 }
@@ -169,7 +178,7 @@ export class EgRadar {
 
 
     public getRingRadius(ring: number) {
-        const ringCount = this._styleConfig.showSectorLabels ? this.rings.length + 1 : this.rings.length;
+        const ringCount = this._styleConfig.sectors?.showLabels ? this.rings.length + 1 : this.rings.length;
         const ringWidth = (this.config.width / 2) / ringCount;
 
         return ring * ringWidth;

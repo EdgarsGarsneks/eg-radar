@@ -91,7 +91,7 @@ describe('EgRadar entry layout', () => {
                 { label: "ring4" },
                 { label: "ring5" }
             ];
-            radarConfig.style = { showSectorLabels: false };
+            radarConfig.style = { sectors: { showLabels: false } };
 
             const expectedWidth = (radarConfig.width / 2) / radarConfig.rings.length;
             const radar = new EgRadar(radarConfig);
@@ -171,13 +171,13 @@ describe('EgRadar entry layout', () => {
             const distances = points.flatMap(p => points.flatMap(p2 => Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2))));
 
             // Should not generate place points closer that defined offset
-            expect(distances.filter(d => d - radar.style.blips!.offset! >= -1e10).length).not.toBe(0);    
+            expect(distances.filter(d => d - radar.style.blips!.offset! >= -1e10).length).not.toBe(0);
         });
 
         it('should generate random position inside ring if no spots are available', () => {
             radarConfig.entries = [];
             radarConfig.width = 20;
-        
+
             for (let i = 0; i < 100; i++) {
                 radarConfig.entries.push({ label: "entry" + i, ring: 0, sector: 0, moved: 0 })
             }
@@ -215,19 +215,27 @@ describe('EgRadar entry layout', () => {
         expect(radar.style).toMatchObject({
             background: '#00000000',
             lineColor: 'gray',
-            sectorLabelColor: 'black',
             blips: {
                 offset: 15,
                 r: 12,
                 fontSize: 12
             },
-            tooltip:{
+            tooltip: {
                 background: 'black',
-                color: 'white',
+                textColor: 'white',
                 fontSize: 15
             },
-            showSectorLabels: true,
-            showRingLabels: true,
+            rings: {
+                showLabels: true,
+                showCurvedLabels: true,
+                showBackground: false,
+                fontSize: 30
+            },
+            sectors: {
+                showLabels: true,
+                textColor: 'black',
+                fontSize: 30
+            },
             font: 'Arial, Helvetica'
         });
 

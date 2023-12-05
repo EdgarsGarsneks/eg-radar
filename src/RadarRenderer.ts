@@ -46,7 +46,7 @@ export class RadarRenderer {
             let line = toCartesian(this.config.width / 2 + 10, sector.startAngle);
             this.drawLine(grid, 0, 0, line.x, line.y, this.radar.style.lineColor);
 
-            if (this.radar.style.showSectorLabels) {
+            if (this.radar.style.sectors?.showLabels) {
                 this.drawSectorLabel(legend, sector);
             }
         }
@@ -54,16 +54,17 @@ export class RadarRenderer {
 
     private renderRings(grid: any) {
         let rings = this.radar.rings;
+        let ringLabels = grid.append("g").attr("id", "ringLabels_" + this.svgId)
 
-
-        for (const ring of this.radar.rings) {
-            console.log(ring)
-        }
         for (const ring of rings) {
             this.renderRingLine(grid, ring);
-            if (this.radar.style.showRingLabels) {
-                this.renderTextOnRingLine(grid, this.radar.getRingRadius(ring.id + 0.4), (180 / 180) * Math.PI, (360 / 180) * Math.PI, ring.label, ring.color, 0.4);
-                //  this.renderRingLabel(grid, ring);
+
+            if (this.radar.style.rings?.showLabels) {
+                if (this.radar.style.rings?.showCurvedLabels) {
+                    this.renderCurvedRingLabel(ringLabels, ring);
+                } else {
+                    this.renderRingLabel(ringLabels, ring);
+                }
             }
         }
     }
@@ -75,7 +76,15 @@ export class RadarRenderer {
             .attr("r", ring.r)
             .style("fill", "none")
             .style("stroke", this.radar.style.lineColor)
-            .style("stroke-width", 1);
+            .style("stroke-width", 1)
+
+        if (this.radar.style.rings?.showBackground) {
+            grid.append("g")
+                .append("path")
+                .style("fill", ring.color)
+                .style("opacity", 0.1)
+                .attr("d", d3.arc()({ startAngle: 0, endAngle: Math.PI * 2, innerRadius: ring.r, outerRadius: this.radar.getRingRadius(ring.id + 1) }))
+        }
     }
 
     private renderRingLabel(grid: any, ring: Ring) {
@@ -90,6 +99,10 @@ export class RadarRenderer {
             .style("font-weight", "bold")
             .style("pointer-events", "none")
             .style("user-select", "none");
+    }
+
+    private renderCurvedRingLabel(grid: any, ring: Ring) {
+        this.renderTextOnRingLine(grid, this.radar.getRingRadius(ring.id + 0.4), (180 / 180) * Math.PI, (360 / 180) * Math.PI, ring.label, ring.color, 0.4);
     }
 
     private renderEntries(radar: any) {
@@ -167,16 +180,15 @@ export class RadarRenderer {
             .attr("ry", 4)
             .style("fill", this.radar.style.tooltip?.background)
             .style("opacity", 1)
-        console.log(this.radar.style.tooltip?.color)
+
         this.tooltip.append("text")
             .text("")
             .style("font-family", this.radar.style.font)
             .style("font-size", `${this.radar.style.tooltip?.fontSize}px`)
-            .style("fill", this.radar.style.tooltip?.color)
+            .style("fill", this.radar.style.tooltip?.textColor)
             .style("pointer-events", "none")
             .style("user-select", "none");
     }
-
 
     private drawLine(grid: any, x1: number, y1: number, x2: number, y2: number, color?: string) {
         grid.append("line")
@@ -190,27 +202,9 @@ export class RadarRenderer {
 
     private drawSectorLabel(legend: any, sector: Sector) {
         let labelRad = this.radar.getRingRadius(this.radar.rings.length + 1) * 0.9
-        let s = toCartesian(labelRad, sector.startAngle);
-        let e = toCartesian(labelRad, sector.endAngle);
+        let legendLabel = legend.append("g").attr("id", "legendText" + sector.id + "_" + this.svgId)
 
-        legend.append("path")
-            .attr("id", "legend" + sector.id + "_" + this.svgId)
-            .attr("d", ["M", s.x, s.y, "A", labelRad, labelRad, 1, 0, 1, e.x, e.y].join(" "))
-            .style("fill", "none")
-
-        legend.append("text")
-            .append("textPath")
-            .style("font-family", this.radar.style.font)
-            .attr("id", "legendText" + sector.id + "_" + this.svgId)
-            .attr("xlink:href", "#legend" + sector.id + "_" + this.svgId)
-            .style("text-anchor", "middle")
-            .attr("startOffset", "50%")
-            .text(sector.label)
-            .attr("fill", this.radar.style.sectorLabelColor)
-            .attr("font-weight", "bold")
-            .attr("font-size", "30px")
-            .style("pointer-events", "none")
-            .style("user-select", "none");
+        this.renderTextOnRingLine(legendLabel, labelRad, sector.startAngle, sector.endAngle, sector.label, this.radar.style.sectors?.textColor, 1);
     }
 
     private renderTextOnRingLine(element: any, r: number, startAngle: number, endAngle: number, text: string, color?: string, opacity?: number) {
@@ -219,7 +213,6 @@ export class RadarRenderer {
         let e = toCartesian(labelRad, endAngle);
 
         let refId = this.svgId + "_" + r + "_" + startAngle + "_" + endAngle;
-
 
         element.append("path")
             .attr("id", "path_" + refId)
@@ -252,7 +245,7 @@ export class RadarRenderer {
     private highlightSector(sector: Sector) {
         this.svg.selectAll(".blip")
             .style("opacity", (entry: any) => sector.id == entry.sector?.id ? 1 : 0.3);
-        if (this.radar.style.showSectorLabels) {
+        if (this.radar.style.sectors?.showLabels) {
             for (let i = 0; i < this.radar.sectors.length; i++) {
                 this.svg.select("#legendText" + i + "_" + this.svgId)
                     .style("opacity", sector.id == i ? 1 : 0.3);

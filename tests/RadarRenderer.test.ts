@@ -112,10 +112,12 @@ describe('RadarRenderer', () => {
                 { label: "Entry 3", ring: 2, sector: 2, moved: -1 }
             ],
             style: {
-                background: "#123456", lineColor: "#456", sectorLabelColor: "#789",
+                background: "#123456", lineColor: "#456",
                 blips: { r: 10, fontSize: 10 },
                 font: "Arial",
-                tooltip: { background: "#abc", fontSize: 15, color: "#def" }
+                tooltip: { background: "#abc", fontSize: 15, textColor: "#def" },
+                rings: { showLabels: true, fontSize: 30, showCurvedLabels: false },
+                sectors: {showLabels: true, textColor: "#fff", fontSize: 30}
             }
         };
         (d3.select as jest.Mock).mockClear();
@@ -180,8 +182,8 @@ describe('RadarRenderer', () => {
             });
 
             it("should render sector labels", () => {
-                config.style!.showSectorLabels = true;
-                config.style!.showRingLabels = false;
+                config.style!.sectors!.showLabels = true;
+                config.style!.rings!.showLabels = false;
 
                 render();
 
@@ -196,7 +198,7 @@ describe('RadarRenderer', () => {
                     expect(textPath._attributes['id']).toEqual("legendText" + i + "_test");
                     expect(textPath._attributes['xlink:href']).toEqual("#legend" + i + "_test");
                     expect(textPath._attributes['startOffset']).toEqual("50%");
-                    expect(textPath._attributes["fill"]).toEqual(config.style?.sectorLabelColor);
+                    expect(textPath._attributes["fill"]).toEqual(config.style?.sectors?.textColor);
                     expect(textPath._attributes["font-weight"]).toEqual("bold");
                     expect(textPath._attributes["font-size"]).toEqual("30px");
                     expect(textPath._styles['text-anchor']).toEqual("middle");
@@ -207,8 +209,8 @@ describe('RadarRenderer', () => {
             });
 
             it("should not render sector labels", () => {
-                config.style!.showSectorLabels = false;
-                config.style!.showRingLabels = false;
+                config.style!.sectors!.showLabels = false;
+                config.style!.rings!.showLabels = false;
 
                 render();
 
@@ -223,7 +225,7 @@ describe('RadarRenderer', () => {
 
         describe('Rendering ring elements', () => {
             it('should render 3 rings correctly without sector labels', () => {
-                config.style!.showSectorLabels = false;
+                config.style!.sectors!.showLabels = false;
 
                 render();
 
@@ -234,7 +236,7 @@ describe('RadarRenderer', () => {
             });
 
             it('should render 3 rings correctly with space for sector labels', () => {
-                config.style!.showSectorLabels = true;
+                config.style!.sectors!.showLabels = true;
 
                 render();
 
@@ -245,7 +247,7 @@ describe('RadarRenderer', () => {
             });
 
             it('should render 5 rings correctly without sector labels', () => {
-                config.style!.showSectorLabels = false;
+                config.style!.sectors!.showLabels = false;
                 config.rings = [
                     { label: "Ring 1", color: 'red' },
                     { label: "Ring 2", color: 'green' },
@@ -263,7 +265,7 @@ describe('RadarRenderer', () => {
             });
 
             it('should render 5 rings correctly with space for sector labels', () => {
-                config.style!.showSectorLabels = true;
+                config.style!.sectors!.showLabels = true;
                 config.rings = [
                     { label: "Ring 1", color: 'red' },
                     { label: "Ring 2", color: 'green' },
@@ -281,7 +283,7 @@ describe('RadarRenderer', () => {
             });
 
             it("should not render ring labels", () => {
-                config.style!.showRingLabels = false;
+                config.style!.rings!.showLabels = false;
                 render();
 
                 const labels = getGridElement()._children.filter((child: any) => child._name === 'text');
@@ -289,19 +291,37 @@ describe('RadarRenderer', () => {
                 expect(labels.length).toEqual(0);
             });
 
-            it("should render ring labels correctly", () => {
-                config.style!.showRingLabels = true;
+            it("should render ring labels correctly, showCurvedLabels = false", () => {
+                config.style!.rings!.showLabels = true;
+                config.style!.rings!.showCurvedLabels = false;
 
                 render();
 
-                const labels = getGridElement()._children.filter((child: any) => child._name === 'text').map((path: any) => path._children[0]);
-                expect(labels.length).toEqual(config.rings.length);
-                
-                for (let i = 0; i < labels.length; i++) {
-                    expect(labels[i]._text).toEqual(config.rings[i].label);
+                const ringLabelsElement = getGridElement()._children.filter((child: any) => child._attributes["id"] === 'ringLabels_test')[0];
+                const ringLabels = ringLabelsElement._children;
+
+                expect(ringLabels.length).toEqual(config.rings.length);
+
+                for (let i = 0; i < ringLabels.length; i++) {
+                    expect(ringLabels[i]._text).toEqual(config.rings[i].label);
                 }
             });
 
+            it("should render ring labels correctly, showCurvedLabels = true", () => {
+                config.style!.rings!.showLabels = true;
+                config.style!.rings!.showCurvedLabels = true;
+
+                render();
+
+                const ringLabelsElement = getGridElement()._children.filter((child: any) => child._attributes["id"] === 'ringLabels_test')[0];
+                const ringLabels = ringLabelsElement._children.filter((child:any) => child._name === "text").map((child:any) => child._children[0]);
+
+                expect(ringLabels.length).toEqual(config.rings.length);
+
+                for (let i = 0; i < ringLabels.length; i++) {
+                    expect(ringLabels[i]._text).toEqual(config.rings[i].label);
+                }
+            });
         });
 
         describe('Rendering radar entries', () => {
@@ -526,7 +546,7 @@ describe('RadarRenderer', () => {
         expect(tooltipText._text).toEqual(text);
         expect(tooltipText._styles['font-family']).toEqual(config.style?.font);
         expect(tooltipText._styles['font-size']).toEqual(config.style?.tooltip?.fontSize + "px");
-        expect(tooltipText._styles['fill']).toEqual(config.style?.tooltip?.color);
+        expect(tooltipText._styles['fill']).toEqual(config.style?.tooltip?.textColor);
         expect(tooltipText._styles['pointer-events']).toEqual("none");
         expect(tooltipText._styles['user-select']).toEqual("none");
     }

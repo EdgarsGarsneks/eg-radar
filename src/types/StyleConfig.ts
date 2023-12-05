@@ -1,18 +1,27 @@
 export interface StyleConfig {
-    showSectorLabels?: boolean;
-    showRingLabels?: boolean;
-    lineColor?: string;
     background?: string;
+    lineColor?: string;
     font?: string;
-    sectorLabelColor?: string;
     blips?: {
         r?: number;
         offset?: number;
         fontSize?: number;
+        textColor?: string;
     },
     tooltip?: {
         background?: string;
-        color?: string;
+        textColor?: string;
+        fontSize?: number;
+    },
+    rings?: {
+        showLabels?: boolean;
+        showCurvedLabels?: boolean;
+        showBackground?: boolean;
+        fontSize?: number;
+    },
+    sectors?: {
+        showLabels?: boolean;
+        textColor?: string;
         fontSize?: number;
     }
     seed?: number;
