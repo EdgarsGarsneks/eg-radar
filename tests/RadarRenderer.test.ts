@@ -115,7 +115,7 @@ describe('RadarRenderer', () => {
                 background: "#123456", lineColor: "#456", sectorLabelColor: "#789",
                 blips: { r: 10, fontSize: 10 },
                 font: "Arial",
-                tooltip: { background: "#abc", fontSize: 15, fontColor: "#def" }
+                tooltip: { background: "#abc", fontSize: 15, color: "#def" }
             }
         };
         (d3.select as jest.Mock).mockClear();
@@ -294,10 +294,9 @@ describe('RadarRenderer', () => {
 
                 render();
 
-                const labels = getGridElement()._children.filter((child: any) => child._name === 'text');
-
+                const labels = getGridElement()._children.filter((child: any) => child._name === 'text').map((path: any) => path._children[0]);
                 expect(labels.length).toEqual(config.rings.length);
-
+                
                 for (let i = 0; i < labels.length; i++) {
                     expect(labels[i]._text).toEqual(config.rings[i].label);
                 }
@@ -527,7 +526,7 @@ describe('RadarRenderer', () => {
         expect(tooltipText._text).toEqual(text);
         expect(tooltipText._styles['font-family']).toEqual(config.style?.font);
         expect(tooltipText._styles['font-size']).toEqual(config.style?.tooltip?.fontSize + "px");
-        expect(tooltipText._styles['fill']).toEqual(config.style?.tooltip?.fontColor);
+        expect(tooltipText._styles['fill']).toEqual(config.style?.tooltip?.color);
         expect(tooltipText._styles['pointer-events']).toEqual("none");
         expect(tooltipText._styles['user-select']).toEqual("none");
     }

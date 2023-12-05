@@ -54,10 +54,16 @@ export class RadarRenderer {
 
     private renderRings(grid: any) {
         let rings = this.radar.rings;
+
+
+        for (const ring of this.radar.rings) {
+            console.log(ring)
+        }
         for (const ring of rings) {
             this.renderRingLine(grid, ring);
             if (this.radar.style.showRingLabels) {
-                this.renderRingLabel(grid, ring);
+                this.renderTextOnRingLine(grid, this.radar.getRingRadius(ring.id + 0.4), (180 / 180) * Math.PI, (360 / 180) * Math.PI, ring.label, ring.color, 0.4);
+                //  this.renderRingLabel(grid, ring);
             }
         }
     }
@@ -161,12 +167,12 @@ export class RadarRenderer {
             .attr("ry", 4)
             .style("fill", this.radar.style.tooltip?.background)
             .style("opacity", 1)
-
+        console.log(this.radar.style.tooltip?.color)
         this.tooltip.append("text")
             .text("")
             .style("font-family", this.radar.style.font)
             .style("font-size", `${this.radar.style.tooltip?.fontSize}px`)
-            .style("fill", this.radar.style.tooltip?.fontColor)
+            .style("fill", this.radar.style.tooltip?.color)
             .style("pointer-events", "none")
             .style("user-select", "none");
     }
@@ -203,6 +209,35 @@ export class RadarRenderer {
             .attr("fill", this.radar.style.sectorLabelColor)
             .attr("font-weight", "bold")
             .attr("font-size", "30px")
+            .style("pointer-events", "none")
+            .style("user-select", "none");
+    }
+
+    private renderTextOnRingLine(element: any, r: number, startAngle: number, endAngle: number, text: string, color?: string, opacity?: number) {
+        let labelRad = r;
+        let s = toCartesian(labelRad, startAngle);
+        let e = toCartesian(labelRad, endAngle);
+
+        let refId = this.svgId + "_" + r + "_" + startAngle + "_" + endAngle;
+
+
+        element.append("path")
+            .attr("id", "path_" + refId)
+            .attr("d", ["M", s.x, s.y, "A", labelRad, labelRad, 1, 0, 1, e.x, e.y].join(" "))
+            .style("fill", "none")
+
+        element.append("text")
+            .append("textPath")
+            .style("font-family", this.radar.style.font)
+            .attr("id", "text_" + refId)
+            .attr("xlink:href", "#path_" + refId)
+            .style("text-anchor", "middle")
+            .attr("startOffset", "50%")
+            .text(text)
+            .attr("fill", color)
+            .attr("font-weight", "bold")
+            .attr("font-size", "30px")
+            .style("opacity", opacity ?? 1)
             .style("pointer-events", "none")
             .style("user-select", "none");
     }

@@ -12,7 +12,7 @@ export interface StyleConfig {
     },
     tooltip?: {
         background?: string;
-        fontColor?: string;
+        color?: string;
         fontSize?: number;
     }
     seed?: number;

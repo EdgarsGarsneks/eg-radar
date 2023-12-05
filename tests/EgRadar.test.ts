@@ -213,7 +213,7 @@ describe('EgRadar entry layout', () => {
         const radar = new EgRadar(radarConfig);
 
         expect(radar.style).toMatchObject({
-            background: 'white',
+            background: '#00000000',
             lineColor: 'gray',
             sectorLabelColor: 'black',
             blips: {
@@ -223,7 +223,7 @@ describe('EgRadar entry layout', () => {
             },
             tooltip:{
                 background: 'black',
-                fontColor: 'white',
+                color: 'white',
                 fontSize: 15
             },
             showSectorLabels: true,

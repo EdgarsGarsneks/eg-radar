@@ -6,11 +6,13 @@ import { Ring } from "./types/Ring";
 import { Sector } from "./types/Sector";
 import { StyleConfig } from "./types/StyleConfig";
 import { toPolar, toCartesian, pipe } from "./Utils";
+import { all } from "deepmerge";
+
 
 const DEFAULT_CONFIG: StyleConfig = {
     showSectorLabels: true,
     showRingLabels: true,
-    background: "white",
+    background: "#00000000",
     lineColor: "gray",
     sectorLabelColor: "black",
     font: "Arial, Helvetica",
@@ -21,7 +23,7 @@ const DEFAULT_CONFIG: StyleConfig = {
     },
     tooltip: {
         background: "black",
-        fontColor: "white",
+        color: "white",
         fontSize: 15
     },
     seed: Math.random() * 1000
@@ -45,6 +47,7 @@ export class EgRadar {
     public onEntryHoverOut!: Function;
 
     constructor(private _config: RadarConfig) {
+        // TODO: Not doing a deep merge here
         this._styleConfig = { ...DEFAULT_CONFIG, ..._config.style };
         this.rand = new PseudoRand(this._styleConfig.seed!);
 
@@ -224,7 +227,7 @@ export class EgRadar {
             (entry: RadarEntry) => this.config.onSelect?.call(this, entry)
         );
 
-        this.onSectorSelect = (sector: Sector) => this.selectSector.call(this,sector);
+        this.onSectorSelect = (sector: Sector) => this.selectSector.call(this, sector);
         this.onEntryHover = (entry: RadarEntry) => this.config.onHover?.call(this, entry);
         this.onEntryHoverOut = (entry: RadarEntry) => this.config.onHoverOut?.call(this, entry);
     }

@@ -95,6 +95,10 @@ Radar configuration object has following style properties:
 | style.blips.r | number | Blip radius |
 | style.blips.offset | number | Blip distance to be kept from other blips |
 | style.blips.fontSize | string | Blip label font size |
+| style.tooltip | object | Tooltip style configuration |
+| style.tooltip.color | string | Tooltip text color |
+| style.tooltip.backgroundColor | string | Tooltip background color |
+| style.tooltip.fontSize | number | Tooltip font size |
 
 ## Contributions
 
