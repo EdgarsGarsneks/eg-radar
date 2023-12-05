@@ -6,8 +6,7 @@ import { Ring } from "./types/Ring";
 import { Sector } from "./types/Sector";
 import { StyleConfig } from "./types/StyleConfig";
 import { toPolar, toCartesian, pipe } from "./Utils";
-import { all } from "deepmerge";
-
+import merge from 'lodash.merge';
 
 const DEFAULT_CONFIG: StyleConfig = {
     background: "#00000000",
@@ -43,7 +42,7 @@ export class EgRadar {
     private _sectors: Sector[] = [];
     private _entries: RadarEntry[] = [];
     private _renderer?: RadarRenderer;
-    private _styleConfig: StyleConfig;
+    private _styleConfig: StyleConfig = {};
 
     private _selectedSector?: Sector;
     private _selectedEntry?: RadarEntry;
@@ -56,8 +55,8 @@ export class EgRadar {
     public onEntryHoverOut!: Function;
 
     constructor(private _config: RadarConfig) {
-        // TODO: Not doing a deep merge here
-        this._styleConfig = { ...DEFAULT_CONFIG, ..._config.style };
+        this._styleConfig = merge({}, DEFAULT_CONFIG, _config.style,);
+
         this.rand = new PseudoRand(this._styleConfig.seed!);
 
         this.initRings();
@@ -149,7 +148,7 @@ export class EgRadar {
             moved: entry.moved,
             point: { x: 0, y: 0 },
             color: this.rings[entry.ring]?.color ?? 'black',
-            data: entry
+            data: entry.data
         };
     }
 

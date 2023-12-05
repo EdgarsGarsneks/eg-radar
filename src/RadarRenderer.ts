@@ -83,7 +83,15 @@ export class RadarRenderer {
                 .append("path")
                 .style("fill", ring.color)
                 .style("opacity", 0.1)
-                .attr("d", d3.arc()({ startAngle: 0, endAngle: Math.PI * 2, innerRadius: ring.r, outerRadius: this.radar.getRingRadius(ring.id + 1) }))
+                .attr("d", d3.arc()
+                    ({
+                        startAngle: 0,
+                        endAngle: Math.PI * 2,
+                        innerRadius: ring.r,
+                        outerRadius: this.radar.getRingRadius(ring.id + 1)
+                    })
+                )
+
         }
     }
 
@@ -95,14 +103,22 @@ export class RadarRenderer {
             .style("fill", ring.color ?? "black")
             .style("opacity", 0.4)
             .style("font-family", this.radar.style.font)
-            .style("font-size", "35px")
+            .style("font-size", `${this.radar.style.rings?.fontSize}px`)
             .style("font-weight", "bold")
             .style("pointer-events", "none")
             .style("user-select", "none");
     }
 
     private renderCurvedRingLabel(grid: any, ring: Ring) {
-        this.renderTextOnRingLine(grid, this.radar.getRingRadius(ring.id + 0.4), (180 / 180) * Math.PI, (360 / 180) * Math.PI, ring.label, ring.color, 0.4);
+        this.renderTextOnRingLine(
+            grid,
+            this.radar.getRingRadius(ring.id + 0.4),
+            Math.PI,
+            2 * Math.PI,
+            ring.label,
+            ring.color,
+            this.radar.style.rings?.fontSize,
+            0.4);
     }
 
     private renderEntries(radar: any) {
@@ -204,10 +220,18 @@ export class RadarRenderer {
         let labelRad = this.radar.getRingRadius(this.radar.rings.length + 1) * 0.9
         let legendLabel = legend.append("g").attr("id", "legendText" + sector.id + "_" + this.svgId)
 
-        this.renderTextOnRingLine(legendLabel, labelRad, sector.startAngle, sector.endAngle, sector.label, this.radar.style.sectors?.textColor, 1);
+        this.renderTextOnRingLine(
+            legendLabel,
+            labelRad,
+            sector.startAngle,
+            sector.endAngle,
+            sector.label,
+            this.radar.style.sectors?.textColor,
+            this.radar.style.sectors?.fontSize,
+            1);
     }
 
-    private renderTextOnRingLine(element: any, r: number, startAngle: number, endAngle: number, text: string, color?: string, opacity?: number) {
+    private renderTextOnRingLine(element: any, r: number, startAngle: number, endAngle: number, text: string, color?: string, fontSize?: number, opacity?: number) {
         let labelRad = r;
         let s = toCartesian(labelRad, startAngle);
         let e = toCartesian(labelRad, endAngle);
@@ -229,7 +253,7 @@ export class RadarRenderer {
             .text(text)
             .attr("fill", color)
             .attr("font-weight", "bold")
-            .attr("font-size", "30px")
+            .attr("font-size", `${fontSize}px`)
             .style("opacity", opacity ?? 1)
             .style("pointer-events", "none")
             .style("user-select", "none");

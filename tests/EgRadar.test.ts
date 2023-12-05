@@ -1,6 +1,7 @@
 import { EgRadar, RadarConfig } from "../src/EgRadar";
 import { toPolar } from "../src/Utils";
 
+
 let radarConfig: RadarConfig;
 
 describe('EgRadar entry layout', () => {
@@ -20,12 +21,26 @@ describe('EgRadar entry layout', () => {
                 { label: "sector4" }
             ],
             entries: [
-                { label: "entry1", ring: 0, sector: 0, moved: 0 },
-                { label: "entry2", ring: 1, sector: 1, moved: 0 },
-                { label: "entry3", ring: 2, sector: 2, moved: 0 },
-                { label: "entry4", ring: 0, sector: 3, moved: 0 }
+                { label: "entry1", ring: 0, sector: 0, moved: 0, data: { key1: "value1" } },
+                { label: "entry2", ring: 1, sector: 1, moved: 1, data: { key2: "value2" } },
+                { label: "entry3", ring: 2, sector: 2, moved: -1, data: { key3: "value3" } },
+                { label: "entry4", ring: 0, sector: 3, moved: 0, data: { key4: "value4" } }
             ]
         };
+    });
+
+    describe('when entries are provided', () => {
+        it('should properly map to RadarEntry', () => {
+            const radar = new EgRadar(radarConfig);
+
+            radar.entries.forEach((entry, i) => {
+                expect(entry.label).toEqual(radarConfig.entries[i].label);
+                expect(entry.ring.id).toEqual(radarConfig.entries[i].ring);
+                expect(entry.sector.id).toEqual(radarConfig.entries[i].sector);
+                expect(entry.moved).toEqual(radarConfig.entries[i].moved);
+                expect(entry.data).toEqual(radarConfig.entries[i].data);
+            });
+        });
     });
 
     describe('when seed is not provided', () => {
@@ -210,6 +225,7 @@ describe('EgRadar entry layout', () => {
     })
 
     it('should set default values for optional parameters', () => {
+        radarConfig.style = {};
         const radar = new EgRadar(radarConfig);
 
         expect(radar.style).toMatchObject({
@@ -241,6 +257,24 @@ describe('EgRadar entry layout', () => {
 
         expect(radar.style.seed).toBeGreaterThanOrEqual(0);
         expect(radar.style.seed).toBeLessThanOrEqual(10000);
+    })
+
+    it('should not override with default value if value is present in config', () => {
+        radarConfig.style = {
+            blips: {
+                r: 999
+            }
+        };
+        
+        const radar = new EgRadar(radarConfig);
+
+        expect(radar.style).toMatchObject({
+            blips: {
+                offset: 15,
+                r: 999,
+                fontSize: 12
+            }
+        });
     })
 
 });
