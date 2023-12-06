@@ -316,6 +316,7 @@ export class RadarRenderer {
         const prevonEntrySelect = this.radar.onEntrySelect;
         const prevOnEntryHover = this.radar.onEntryHover;
         const prevOnEntryHoverOut = this.radar.onEntryHoverOut;
+        const prevOnSectorSelect = this.radar.onSectorSelect;
 
         this.radar.onEntrySelect = pipe(
             (entry: RadarEntry) => this.highlightSector(entry.sector),
@@ -330,6 +331,11 @@ export class RadarRenderer {
         this.radar.onEntryHoverOut = pipe(
             (entry: RadarEntry) => this.unhighlightEntry(entry),
             (entry: RadarEntry) => prevOnEntryHoverOut.call(this.radar, entry)
+        );
+
+        this.radar.onSectorSelect = pipe(
+            (sector: Sector) => this.highlightSector(sector),
+            (sector: Sector) => prevOnSectorSelect.call(this.radar, sector)
         );
     }
 
