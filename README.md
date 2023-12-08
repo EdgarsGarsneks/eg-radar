@@ -101,6 +101,7 @@ Radar configuration object has following style properties:
 | style.rings.showCurvedLabels | boolean | true                    | Renders ring label in arc. Long text may not be rendered                                       |
 | style.sectors                | object  |                         | Sector style configuration                                                                     |
 | style.sectors.showLabels     | boolean | true                    | Show sector labels                                                                             |
+| style.sectors.highlight      | boolean | false                   | Highlight sector on entry selection                                                            |
 | style.sectors.fontSize       | number  | 30                      | Sector text font size                                                                          |
 | style.sectors.textColor      | string  | black                   | Sector text color                                                                              |
 | style.tooltip                | object  |                         | Tooltip style configuration                                                                    |
@@ -108,12 +109,11 @@ Radar configuration object has following style properties:
 | style.tooltip.background     | string  | black                   | Tooltip background color                                                                       |
 | style.tooltip.fontSize       | number  | 15                      | Tooltip text font size                                                                         |
 
+### Contributions
 
+Contributions are welcome. Please read [CONTRIBUTING.md]() for more information. <br><br>
 
-
-
-## Contributions
-
-Contributions are welcome. Please read [CONTRIBUTING.md]() for more information. This project exists thanks to all the people who contribute:
-
-
+Special thanks to all the people who have already contributed to this project! 
+<a href="https://github.com/EdgarsGarsneks/eg-radar/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=EdgarsGarsneks/eg-radar" />
+</a>

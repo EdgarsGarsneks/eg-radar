@@ -8,6 +8,22 @@ const getTooltipElement = () => getRadarElement()._children[2];
 
 let elements: any = {};
 
+const findElementById = (element: any, id: string) :any => {
+    if (element._attributes['id'] === id) {
+        return element;
+    } else if (element._children.length > 0) {
+        for (let i = 0; i < element._children.length; i++) {
+            const child = findElementById(element._children[i], id);
+            if (child !== undefined) {
+                return child;
+            }
+        }
+        
+    }
+
+return undefined;
+};
+
 jest.mock('d3', () => ({
     select: jest.fn().mockImplementation((name: string) => {
         return elements[name];
@@ -87,6 +103,7 @@ describe('RadarRenderer', () => {
     let renderer: RadarRenderer;
 
     const render = () => {
+        elements = { '#test': mockD3Element('#test') };
         radar = new EgRadar(config);
         renderer = new RadarRenderer(radar);
         renderer.render('test');
@@ -117,7 +134,7 @@ describe('RadarRenderer', () => {
                 font: "Arial",
                 tooltip: { background: "#abc", fontSize: 15, textColor: "#def" },
                 rings: { showLabels: true, fontSize: 30, showCurvedLabels: false },
-                sectors: {showLabels: true, textColor: "#fff", fontSize: 30}
+                sectors: { showLabels: true, textColor: "#fff", fontSize: 30, highlight: true }
             }
         };
         (d3.select as jest.Mock).mockClear();
@@ -314,7 +331,7 @@ describe('RadarRenderer', () => {
                 render();
 
                 const ringLabelsElement = getGridElement()._children.filter((child: any) => child._attributes["id"] === 'ringLabels_test')[0];
-                const ringLabels = ringLabelsElement._children.filter((child:any) => child._name === "text").map((child:any) => child._children[0]);
+                const ringLabels = ringLabelsElement._children.filter((child: any) => child._name === "text").map((child: any) => child._children[0]);
 
                 expect(ringLabels.length).toEqual(config.rings.length);
 
@@ -498,14 +515,29 @@ describe('RadarRenderer', () => {
             expect(config.onSelect).toHaveBeenCalledWith(entry);
         });
 
-        it('should highlight sector on click event', () => {
+       it('should highlight sector on click event, highlight = true', () => {
             click({}, entry);
 
             expect(config.onSelect).toHaveBeenCalledWith(entry);
+            
+            expect(elements['#test'].select).toHaveBeenCalledWith("#legendText0_test");
+            expect(elements['#test'].select).toHaveBeenCalledWith("#legendText1_test");
+            expect(elements['#test'].select).toHaveBeenCalledWith("#legendText2_test");
 
             expect(getSvgElement()._children[1]._styles['opacity']).toEqual(1);
             expect(getSvgElement()._children[2]._styles['opacity']).toEqual(0.3);
             expect(getSvgElement()._children[3]._styles['opacity']).toEqual(0.3);
+        });
+
+        it('should not highlight sector on click event, highlight = false', () => {
+            config.style!.sectors!.highlight = false;
+            render();
+
+            click({}, entry);
+            expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText0_test");
+            expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText1_test");
+            expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText2_test");
+            expect(config.onSelect).toHaveBeenCalledWith(entry);
         });
 
     });
@@ -557,7 +589,7 @@ describe('RadarRenderer', () => {
 
         expect(blipLabel._attributes['y']).toEqual(3);
         expect(blipLabel._attributes['text-anchor']).toEqual("middle");
-        expect(blipLabel._styles['fill']).toEqual("#fff");
+        expect(blipLabel._styles['fill']).toEqual("white");
         expect(blipLabel._styles['font-family']).toEqual(config.style?.font);
         expect(blipLabel._styles['font-size']).toEqual(config.style?.blips?.fontSize);
         expect(blipLabel._styles['pointer-events']).toEqual("none");

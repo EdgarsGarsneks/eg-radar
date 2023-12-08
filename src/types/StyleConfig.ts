@@ -9,6 +9,7 @@ export interface StyleConfig {
         textColor?: string;
     },
     tooltip?: {
+        enabled?: boolean;
         background?: string;
         textColor?: string;
         fontSize?: number;
@@ -21,6 +22,7 @@ export interface StyleConfig {
     },
     sectors?: {
         showLabels?: boolean;
+        highlight?: boolean;
         textColor?: string;
         fontSize?: number;
     }

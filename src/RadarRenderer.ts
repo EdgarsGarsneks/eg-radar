@@ -179,7 +179,7 @@ export class RadarRenderer {
             .text(entry.id + 1)
             .attr("y", 3)
             .attr("text-anchor", "middle")
-            .style("fill", "#fff")
+            .style("fill", this.radar.style.blips?.textColor)
             .style("font-family", this.radar.style.font)
             .style("font-size", this.radar.style.blips!.fontSize)
             .style("pointer-events", "none")
@@ -267,25 +267,27 @@ export class RadarRenderer {
     }
 
     private highlightSector(sector: Sector) {
-        this.svg.selectAll(".blip")
-            .style("opacity", (entry: any) => sector.id == entry.sector?.id ? 1 : 0.3);
-        if (this.radar.style.sectors?.showLabels) {
-            for (let i = 0; i < this.radar.sectors.length; i++) {
-                this.svg.select("#legendText" + i + "_" + this.svgId)
-                    .style("opacity", sector.id == i ? 1 : 0.3);
+        if (this.radar.style.sectors?.highlight) {
+            this.svg.selectAll(".blip").style("opacity", (entry: any) => sector.id == entry.sector?.id ? 1 : 0.3);
+
+            if (this.radar.style.sectors?.showLabels) {
+                for (let i = 0; i < this.radar.sectors.length; i++) {
+                    this.svg.select("#legendText" + i + "_" + this.svgId)
+                        .style("opacity", sector.id == i ? 1 : 0.3);
+                }
             }
         }
     }
 
     private showTooltip(entry: RadarEntry) {
-        if (entry) {
+        if (entry && this.radar.style.tooltip?.enabled) {
             let offset = 5;
             this.tooltip.style("opacity", 1);
             let text = this.tooltip.select("text").text((entry.id + 1) + ". " + entry.label)
             let bbox = (text.node() as SVGAElement).getBBox();
             if (bbox) {
-                text.attr("transform", `translate(${offset}, ${(bbox.height + this.config.style?.tooltip?.fontSize! + offset) / 2})`)
-                this.tooltip.attr("transform", `translate(${entry.point.x + this.config.style?.tooltip?.fontSize! / 2 + offset}, ${entry.point.y + offset})`)
+                text.attr("transform", `translate(${offset}, ${(bbox.height + this.radar.style?.tooltip?.fontSize! + offset) / 2})`)
+                this.tooltip.attr("transform", `translate(${entry.point.x + this.radar.style?.tooltip?.fontSize! / 2 + offset}, ${entry.point.y + offset})`)
                 this.tooltip.select("rect")
                     .attr("width", bbox.width + offset * 2)
                     .attr("height", bbox.height + offset * 2)

@@ -19,6 +19,7 @@ const DEFAULT_CONFIG: StyleConfig = {
         textColor: "white"
     },
     tooltip: {
+        enabled: true,
         background: "black",
         textColor: "white",
         fontSize: 15
@@ -31,6 +32,7 @@ const DEFAULT_CONFIG: StyleConfig = {
     },
     sectors: {
         showLabels: true,
+        highlight: false,
         textColor: "black",
         fontSize: 30
     },

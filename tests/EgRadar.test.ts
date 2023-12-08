@@ -237,6 +237,7 @@ describe('EgRadar entry layout', () => {
                 fontSize: 12
             },
             tooltip: {
+                enabled: true,
                 background: 'black',
                 textColor: 'white',
                 fontSize: 15
