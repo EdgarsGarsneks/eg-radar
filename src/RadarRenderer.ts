@@ -116,9 +116,12 @@ export class RadarRenderer {
             Math.PI,
             2 * Math.PI,
             ring.label,
-            ring.color,
-            this.radar.style.rings?.fontSize,
-            0.4);
+            {
+                color: ring.color!,
+                fontSize: this.radar.style.rings?.fontSize!,
+                opacity: 0.4
+            }
+        );
     }
 
     private renderEntries(radar: any) {
@@ -226,21 +229,30 @@ export class RadarRenderer {
             sector.startAngle,
             sector.endAngle,
             sector.label,
-            this.radar.style.sectors?.textColor,
-            this.radar.style.sectors?.fontSize,
-            1);
+            {
+                color: this.radar.style.sectors?.textColor!,
+                fontSize: this.radar.style.sectors?.fontSize!,
+                opacity: 1
+            }
+        );
     }
 
-    private renderTextOnRingLine(element: any, r: number, startAngle: number, endAngle: number, text: string, color?: string, fontSize?: number, opacity?: number) {
-        let labelRad = r;
-        let s = toCartesian(labelRad, startAngle);
-        let e = toCartesian(labelRad, endAngle);
+    private renderTextOnRingLine(
+        element: any,
+        r: number,
+        startAngle: number,
+        endAngle: number,
+        text: string,
+        options: { color: string, fontSize: number, opacity: number }
+    ) {
+        let arcStart = toCartesian(r, startAngle);
+        let arcEnd = toCartesian(r, endAngle);
 
         let refId = this.svgId + "_" + r + "_" + startAngle + "_" + endAngle;
 
         element.append("path")
             .attr("id", "path_" + refId)
-            .attr("d", ["M", s.x, s.y, "A", labelRad, labelRad, 1, 0, 1, e.x, e.y].join(" "))
+            .attr("d", ["M", arcStart.x, arcStart.y, "A", r, r, 1, 0, 1, arcEnd.x, arcEnd.y].join(" "))
             .style("fill", "none")
 
         element.append("text")
@@ -251,10 +263,10 @@ export class RadarRenderer {
             .style("text-anchor", "middle")
             .attr("startOffset", "50%")
             .text(text)
-            .attr("fill", color)
+            .attr("fill", options.color)
             .attr("font-weight", "bold")
-            .attr("font-size", `${fontSize}px`)
-            .style("opacity", opacity ?? 1)
+            .attr("font-size", `${options.fontSize}px`)
+            .style("opacity", options.opacity ?? 1)
             .style("pointer-events", "none")
             .style("user-select", "none");
     }

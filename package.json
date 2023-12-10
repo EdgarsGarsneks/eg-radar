@@ -1,7 +1,9 @@
 {
   "name": "eg-radar",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
+  "author": "Edgars Garšneks",
+  "license": "MIT",
   "main": "./dist/EgRadar",
   "module": "./dist/EgRadar",
   "types": "./dist/EgRadar",
@@ -13,8 +15,6 @@
     "test": "jest tests --coverage",
     "link": "tsup && npm link"
   },
-  "author": "Edgars Garšneks",
-  "license": "ISC",
   "dependencies": {
     "@types/lodash": "^4.14.202",
     "d3": "^7.8.5",

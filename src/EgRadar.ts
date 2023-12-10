@@ -32,7 +32,7 @@ const DEFAULT_CONFIG: StyleConfig = {
     },
     sectors: {
         showLabels: true,
-        highlight: false,
+        highlight: true,
         textColor: "black",
         fontSize: 30
     },

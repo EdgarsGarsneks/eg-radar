@@ -251,7 +251,8 @@ describe('EgRadar entry layout', () => {
             sectors: {
                 showLabels: true,
                 textColor: 'black',
-                fontSize: 30
+                fontSize: 30,
+                highlight: true
             },
             font: 'Arial, Helvetica'
         });

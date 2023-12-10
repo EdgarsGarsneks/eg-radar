@@ -101,17 +101,18 @@ Radar configuration object has following style properties:
 | style.rings.showCurvedLabels | boolean | true                    | Renders ring label in arc. Long text may not be rendered                                       |
 | style.sectors                | object  |                         | Sector style configuration                                                                     |
 | style.sectors.showLabels     | boolean | true                    | Show sector labels                                                                             |
-| style.sectors.highlight      | boolean | false                   | Highlight sector on entry selection                                                            |
+| style.sectors.highlight      | boolean | true                    | Highlight sector on entry selection                                                            |
 | style.sectors.fontSize       | number  | 30                      | Sector text font size                                                                          |
 | style.sectors.textColor      | string  | black                   | Sector text color                                                                              |
 | style.tooltip                | object  |                         | Tooltip style configuration                                                                    |
 | style.tooltip.textColor      | string  | white                   | Tooltip text color                                                                             |
+| style.tooltip.enabled        | boolean | true                    | Enable tooltip on hover                                                                        |
 | style.tooltip.background     | string  | black                   | Tooltip background color                                                                       |
 | style.tooltip.fontSize       | number  | 15                      | Tooltip text font size                                                                         |
 
 ### Contributions
 
-Contributions are welcome. Please read [CONTRIBUTING.md]() for more information. <br><br>
+Contributions are welcome. Please read [CONTRIBUTING.md](https://github.com/EdgarsGarsneks/eg-radar/blob/main/CONTRIBUTING.md) for more information. <br><br>
 
 Special thanks to all the people who have already contributed to this project! 
 <a href="https://github.com/EdgarsGarsneks/eg-radar/graphs/contributors">
