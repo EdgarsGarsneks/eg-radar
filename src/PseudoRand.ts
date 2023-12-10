@@ -9,7 +9,7 @@ export class PseudoRand {
     }
 
     public randomBetween(min: number, max: number): number {
-        return min + this.random() * (max - min) + 10;
+        return min + this.random() * (max - min);
     }
 
 }
