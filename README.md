@@ -73,13 +73,6 @@ Radar configuration object has following properties:
 | entries[].moved  | number | Movement direction (1 - up, -1 down, 0 - no change) |
 | entries[].data   | any    | Custom data for your needs                          |
 
-## Callbacks
-Radar configuration object has following callback properties:
-| Property   | Type            | Description                                    |
-| ---------- | --------------- | ---------------------------------------------- |
-| onSelect   | function(entry) | Callback function called when entry is clicked |
-| onHover    | function(entry) | Callback function called when entry is hovered |
-| onHoverOut | function(entry) | Callback function called when hover has ended  |
 
 ## Style
 Radar configuration object has following style properties:
@@ -109,6 +102,17 @@ Radar configuration object has following style properties:
 | style.tooltip.enabled        | boolean | true                    | Enable tooltip on hover                                                                        |
 | style.tooltip.background     | string  | black                   | Tooltip background color                                                                       |
 | style.tooltip.fontSize       | number  | 15                      | Tooltip text font size                                                                         |
+
+
+## Callbacks
+Radar has following callback properties that can be registered using addEventListener function:
+
+| Event         | Type                        | Description                                     |
+| ------------- | --------------------------- | ----------------------------------------------- |
+| selectEntry   | function(entry: RadarEntry) | Callback function called when entry is clicked  |
+| selectSector  | function(sector: Sector)    | Callback function called when sector is clicked |
+| hoverEntry    | function(entry: RadarEntry) | Callback function called when entry is hovered  |
+| hoverEntryOut | function(entry: RadarEntry) | Callback function called when hover has ended   |
 
 ### Contributions
 

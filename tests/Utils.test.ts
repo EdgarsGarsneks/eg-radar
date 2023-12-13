@@ -1,5 +1,4 @@
-import { pipe, toCartesian, toPolar } from "../src/Utils";
-
+import { toCartesian, toPolar } from "../src/Utils";
 
 describe('Common utility functions', () => {
 
@@ -31,21 +30,4 @@ describe('Common utility functions', () => {
         expect(toPolar(pointQ4.x, pointQ4.y).theta).toBeCloseTo(3 * Math.PI / 2);
     })
 
-    it('should run functions in sequence using pipe', () => {
-        let f1 = false;
-        let f2 = false;
-        let f3 = false;
-
-        let f = pipe(
-            () => f1 = true,
-            () => f2 = true,
-            () => f3 = true
-        );
-
-        f();
-
-        expect(f1).toBeTruthy();
-        expect(f2).toBeTruthy();
-        expect(f3).toBeTruthy();
-    })
 })

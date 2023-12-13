@@ -5,7 +5,7 @@ import { RadarEntry } from "./types/RadarEntry";
 import { Ring } from "./types/Ring";
 import { Sector } from "./types/Sector";
 import { StyleConfig } from "./types/StyleConfig";
-import { toPolar, toCartesian, pipe } from "./Utils";
+import { toPolar, toCartesian } from "./Utils";
 import merge from 'lodash.merge';
 
 const DEFAULT_CONFIG: StyleConfig = {
@@ -49,12 +49,15 @@ export class EgRadar {
     private _selectedSector?: Sector;
     private _selectedEntry?: RadarEntry;
     private _selectedRing?: Ring;
+    private _hoveredEntry?: RadarEntry;
     private rand: PseudoRand;
 
-    public onEntrySelect!: Function;
-    public onSectorSelect!: Function;
-    public onEntryHover!: Function;
-    public onEntryHoverOut!: Function;
+    private eventListeners: { [key: string]: Function[] } = {
+        entrySelect: [],
+        sectorSelect: [],
+        entryHover: [],
+        entryHoverOut: []
+    };
 
     constructor(private _config: RadarConfig) {
         this._styleConfig = merge({}, DEFAULT_CONFIG, _config.style,);
@@ -65,7 +68,6 @@ export class EgRadar {
         this.initSectors();
         this.initEntries();
         this.spreadEntries();
-        this.initCallbacks();
     }
 
     public get rings(): Ring[] { return this._rings; }
@@ -77,20 +79,52 @@ export class EgRadar {
     public get selectedSector(): Sector | undefined { return this._selectedSector; }
     public get selectedEntry(): RadarEntry | undefined { return this._selectedEntry; }
     public get selectedRing(): Ring | undefined { return this._selectedRing; }
+    public get hoveredEntry(): RadarEntry | undefined { return this._hoveredEntry; }
 
     public render(svgId: string) {
         this._renderer = new RadarRenderer(this);
         this._renderer.render(svgId);
     }
 
-    private selectSector(sector: Sector) {
+    public selectSector(sector?: Sector) {
         this._selectedSector = sector;
+
+        for (let callback of this.eventListeners.sectorSelect) {
+            callback(sector);
+        }
     }
 
-    private selectEntry(entry: RadarEntry) {
+    public selectEntry(entry?: RadarEntry) {
         this._selectedEntry = entry
-        this._selectedRing = entry.ring;
-        this.selectSector(entry.sector);
+        this._selectedRing = entry?.ring;
+
+        for (let callback of this.eventListeners.entrySelect) {
+            callback(entry);
+        }
+
+        if (entry) {
+            this.selectSector(entry.sector);
+        }
+    }
+
+    public hoverEntry(entry: RadarEntry) {
+        this._hoveredEntry = entry;
+
+        for (let callback of this.eventListeners.entryHover) {
+            callback(entry);
+        }
+    }
+
+    public hoverEntryOut(entry: RadarEntry) {
+        this._hoveredEntry = undefined;
+
+        for (let callback of this.eventListeners.entryHoverOut) {
+            callback(entry);
+        }
+    }
+
+    public addEventListener(event: string, callback: Function) {
+        this.eventListeners[event].push(callback);
     }
 
     private initRings() {
@@ -229,17 +263,6 @@ export class EgRadar {
         const r = this.rand.randomBetween(ring.r, this.getRingRadius(ring.id + 1));
 
         return toCartesian(r, theta);
-    }
-
-    private initCallbacks() {
-        this.onEntrySelect = pipe(
-            (entry: RadarEntry) => this.selectEntry.call(this, entry),
-            (entry: RadarEntry) => this.config.onSelect?.call(this, entry)
-        );
-
-        this.onSectorSelect = (sector: Sector) => this.selectSector.call(this, sector);
-        this.onEntryHover = (entry: RadarEntry) => this.config.onHover?.call(this, entry);
-        this.onEntryHoverOut = (entry: RadarEntry) => this.config.onHoverOut?.call(this, entry);
     }
 
 }

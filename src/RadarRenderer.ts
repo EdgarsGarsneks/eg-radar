@@ -3,7 +3,7 @@ import { RadarConfig } from "./types/RadarConfig";
 import { RadarEntry } from "./types/RadarEntry";
 import { Sector } from "./types/Sector";
 import * as d3 from "d3";
-import { pipe, toCartesian } from "./Utils";
+import { toCartesian } from "./Utils";
 
 export class RadarRenderer {
     private svg: any;
@@ -133,9 +133,9 @@ export class RadarRenderer {
             .attr("id", (d: any) => "blip" + d.id)
             .attr("class", "blip")
             .attr("transform", (entry: RadarEntry) => { return "translate(" + entry.point.x + "," + entry.point.y + ")"; })
-            .on("mouseover", (d: any, entry: RadarEntry) => this.radar.onEntryHover(entry))
-            .on("mouseout", (d: any, entry: RadarEntry) => this.radar.onEntryHoverOut(entry))
-            .on("click", (d: any, entry: RadarEntry) => this.radar.onEntrySelect(entry))
+            .on("mouseover", (d: any, entry: RadarEntry) => this.radar.hoverEntry(entry))
+            .on("mouseout", (d: any, entry: RadarEntry) => this.radar.hoverEntryOut(entry))
+            .on("click", (d: any, entry: RadarEntry) => this.radar.selectEntry(entry))
             .each((entry: RadarEntry) => {
                 let blip: any = this.svg.select("#blip" + entry.id);
 
@@ -280,12 +280,12 @@ export class RadarRenderer {
 
     private highlightSector(sector: Sector) {
         if (this.radar.style.sectors?.highlight) {
-            this.svg.selectAll(".blip").style("opacity", (entry: any) => sector.id == entry.sector?.id ? 1 : 0.3);
+            this.svg.selectAll(".blip").style("opacity", (entry: any) => !sector || sector.id == entry.sector?.id ? 1 : 0.3);
 
             if (this.radar.style.sectors?.showLabels) {
                 for (let i = 0; i < this.radar.sectors.length; i++) {
                     this.svg.select("#legendText" + i + "_" + this.svgId)
-                        .style("opacity", sector.id == i ? 1 : 0.3);
+                        .style("opacity", !sector || sector.id == i ? 1 : 0.3);
                 }
             }
         }
@@ -327,30 +327,10 @@ export class RadarRenderer {
     }
 
     private setupCallbacks() {
-        const prevonEntrySelect = this.radar.onEntrySelect;
-        const prevOnEntryHover = this.radar.onEntryHover;
-        const prevOnEntryHoverOut = this.radar.onEntryHoverOut;
-        const prevOnSectorSelect = this.radar.onSectorSelect;
-
-        this.radar.onEntrySelect = pipe(
-            (entry: RadarEntry) => this.highlightSector(entry.sector),
-            (entry: RadarEntry) => prevonEntrySelect.call(this.radar, entry)
-        );
-
-        this.radar.onEntryHover = pipe(
-            (entry: RadarEntry) => this.highlightEntry(entry),
-            (entry: RadarEntry) => prevOnEntryHover.call(this.radar, entry)
-        );
-
-        this.radar.onEntryHoverOut = pipe(
-            (entry: RadarEntry) => this.unhighlightEntry(entry),
-            (entry: RadarEntry) => prevOnEntryHoverOut.call(this.radar, entry)
-        );
-
-        this.radar.onSectorSelect = pipe(
-            (sector: Sector) => this.highlightSector(sector),
-            (sector: Sector) => prevOnSectorSelect.call(this.radar, sector)
-        );
+        this.radar.addEventListener('sectorSelect', (sector: Sector) => this.highlightSector(sector));
+        this.radar.addEventListener('entrySelect', (entry: RadarEntry) => entry && this.highlightSector(entry.sector));
+        this.radar.addEventListener('entryHover', (entry: RadarEntry) => this.highlightEntry(entry));
+        this.radar.addEventListener('entryHoverOut', (entry: RadarEntry) => this.unhighlightEntry(entry));
     }
 
 }

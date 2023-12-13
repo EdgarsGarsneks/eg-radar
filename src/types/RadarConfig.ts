@@ -1,4 +1,3 @@
-import { RadarEntry } from "./RadarEntry";
 import { StyleConfig } from "./StyleConfig";
 
 export interface RadarConfig {
@@ -7,7 +6,4 @@ export interface RadarConfig {
     rings: { label: string, color?: string }[];
     entries: { label: string, ring: number, sector: number, moved: number, data?: any }[];
     style?: StyleConfig;
-    onHover?: (entry: RadarEntry) => void;
-    onHoverOut?: (entry: RadarEntry) => void;
-    onSelect?: (entry: RadarEntry) => void;
 }

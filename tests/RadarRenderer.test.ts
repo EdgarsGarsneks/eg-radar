@@ -456,11 +456,18 @@ describe('RadarRenderer', () => {
         let mouseout: Function;
         let click: Function;
 
+        let selectEntrySpy: any;
+        let onHoverSpy: any;
+        let onHoverOutSpy: any;
+        let onSectorSelectSpy: any;
+
         beforeEach(() => {
-            config.onHover = jest.fn();
-            config.onHoverOut = jest.fn();
-            config.onSelect = jest.fn();
             render();
+
+            selectEntrySpy = jest.spyOn(radar, 'selectEntry');
+            onHoverSpy = jest.spyOn(radar, 'hoverEntry');
+            onHoverOutSpy = jest.spyOn(radar, 'hoverEntryOut');
+            onSectorSelectSpy = jest.spyOn(radar, 'selectSector');
 
             const blips = getRadarElement()._children[1];
             const g = blips._children[0];
@@ -486,39 +493,41 @@ describe('RadarRenderer', () => {
         it('should call radar.onEntryHover when mouseover', () => {
             mouseover({}, entry);
 
-            expect(config.onHover).toHaveBeenCalledWith(entry);
+            expect(onHoverSpy).toHaveBeenCalledWith(entry);
         });
 
         it('should show tooltip for entry on mouseover event', () => {
             mouseover({}, entry);
 
-            expect(config.onHover).toHaveBeenCalledWith(entry);
+            expect(onHoverSpy).toHaveBeenCalledWith(entry);
             expectToooltipToBeRenderedCorrectly(`${entry.id + 1}. ${entry.label}`, 1);
         });
 
         it('should call radar.onEntryHoverOut when mouseout', () => {
             mouseout({}, entry);
 
-            expect(config.onHoverOut).toHaveBeenCalledWith(entry);
+            expect(onHoverOutSpy).toHaveBeenCalledWith(entry);
         });
 
         it('should hide tooltip for entry on mouseout event', () => {
             mouseout({}, entry);
 
-            expect(config.onHoverOut).toHaveBeenCalledWith(entry);
+            expect(onHoverOutSpy).toHaveBeenCalledWith(entry);
             expectToooltipToBeRenderedCorrectly("", 0);
         });
 
         it('should call radar.onEntrySelect when click', () => {
             click({}, entry);
 
-            expect(config.onSelect).toHaveBeenCalledWith(entry);
+            expect(selectEntrySpy).toHaveBeenCalledWith(entry);
+            expect(onSectorSelectSpy).toHaveBeenCalledWith(entry.sector);
         });
 
        it('should highlight sector on click event, highlight = true', () => {
             click({}, entry);
 
-            expect(config.onSelect).toHaveBeenCalledWith(entry);
+            expect(selectEntrySpy).toHaveBeenCalledWith(entry);
+            expect(onSectorSelectSpy).toHaveBeenCalledWith(entry.sector);
             
             expect(elements['#test'].select).toHaveBeenCalledWith("#legendText0_test");
             expect(elements['#test'].select).toHaveBeenCalledWith("#legendText1_test");
@@ -537,7 +546,8 @@ describe('RadarRenderer', () => {
             expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText0_test");
             expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText1_test");
             expect(elements['#test'].select).not.toHaveBeenCalledWith("#legendText2_test");
-            expect(config.onSelect).toHaveBeenCalledWith(entry);
+            expect(selectEntrySpy).toHaveBeenCalledWith(entry);
+            expect(onSectorSelectSpy).toHaveBeenCalledWith(entry.sector);
         });
 
     });
