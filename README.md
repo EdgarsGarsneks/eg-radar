@@ -2,8 +2,7 @@
 
 <img src="radars.PNG" width="888">
 
-eg-radar is a JavaScript library for creating interactive radars inspired by [Thoughtworks](https://www.thoughtworks.com/radar) and [Zalando Tech Radar](https://opensource.zalando.com/tech-radar/) technology radars. It provides many customization options to create radar that fits your needs and style preferences. You can look at [demo technology radar](https://eg-radar-demo.stackblitz.io/) built with eg-radar.
-
+eg-radar is a JavaScript library for creating interactive radars inspired by [Thoughtworks](https://www.thoughtworks.com/radar) and [Zalando Tech Radar](https://opensource.zalando.com/tech-radar/) technology radars. It provides many customization options to create radar that fits your needs and style preferences. You can look at [demo technology radar](https://github.com/EdgarsGarsneks/eg-tech-radar) built with eg-radar.
 
 ## Installation
 Tech radar module can simply be installed using npm:
@@ -88,19 +87,19 @@ Radar configuration object has following style properties:
 | style.blips.textColor        | string  | white                   | Blip text color                                                                                |
 | style.blips.fontSize         | number  | 12                      | Blip text font size                                                                            |
 | style.rings                  | object  |                         | Ring style configuration                                                                       |
-| style.rings.showLabels       | boolean | true                    | Show ring labels                                                                               |
 | style.rings.fontSize         | number  | 30                      | Ring text font size                                                                            |
-| style.rings.showBackground   | boolean | false                   | If enabled fills ring's background                                                             |
+| style.rings.showLabels       | boolean | true                    | Show ring labels                                                                               |
 | style.rings.showCurvedLabels | boolean | true                    | Renders ring label in arc. Long text may not be rendered                                       |
+| style.rings.showBackground   | boolean | false                   | If enabled fills ring's background                                                             |
 | style.sectors                | object  |                         | Sector style configuration                                                                     |
-| style.sectors.showLabels     | boolean | true                    | Show sector labels                                                                             |
-| style.sectors.highlight      | boolean | true                    | Highlight sector on entry selection                                                            |
 | style.sectors.fontSize       | number  | 30                      | Sector text font size                                                                          |
 | style.sectors.textColor      | string  | black                   | Sector text color                                                                              |
+| style.sectors.showLabels     | boolean | true                    | Show sector labels                                                                             |
+| style.sectors.highlight      | boolean | true                    | Highlight sector on entry selection                                                            |
 | style.tooltip                | object  |                         | Tooltip style configuration                                                                    |
-| style.tooltip.textColor      | string  | white                   | Tooltip text color                                                                             |
 | style.tooltip.enabled        | boolean | true                    | Enable tooltip on hover                                                                        |
 | style.tooltip.background     | string  | black                   | Tooltip background color                                                                       |
+| style.tooltip.textColor      | string  | white                   | Tooltip text color                                                                             |
 | style.tooltip.fontSize       | number  | 15                      | Tooltip text font size                                                                         |
 
 
@@ -113,6 +112,10 @@ Radar has following callback properties that can be registered using addEventLis
 | selectSector  | function(sector: Sector)    | Callback function called when sector is clicked |
 | hoverEntry    | function(entry: RadarEntry) | Callback function called when entry is hovered  |
 | hoverEntryOut | function(entry: RadarEntry) | Callback function called when hover has ended   |
+
+```js
+this.radar.addEventListener('entrySelect', (entry: RadarEntry) => /* do something */); 
+```
 
 ### Contributions
 

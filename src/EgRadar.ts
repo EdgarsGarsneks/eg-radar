@@ -6,38 +6,8 @@ import { Ring } from "./types/Ring";
 import { Sector } from "./types/Sector";
 import { StyleConfig } from "./types/StyleConfig";
 import { toPolar, toCartesian } from "./Utils";
+import { DEFAULT_STYLE_CONFIG } from "./DefaultStyleConfig";
 import merge from 'lodash.merge';
-
-const DEFAULT_CONFIG: StyleConfig = {
-    background: "#00000000",
-    lineColor: "gray",
-    font: "Arial, Helvetica",
-    blips: {
-        r: 12,
-        offset: 15,
-        fontSize: 12,
-        textColor: "white"
-    },
-    tooltip: {
-        enabled: true,
-        background: "black",
-        textColor: "white",
-        fontSize: 15
-    },
-    rings: {
-        showLabels: true,
-        showCurvedLabels: true,
-        showBackground: false,
-        fontSize: 30
-    },
-    sectors: {
-        showLabels: true,
-        highlight: true,
-        textColor: "black",
-        fontSize: 30
-    },
-    seed: Math.random() * 1000
-}
 
 export class EgRadar {
     private _rings: Ring[] = [];
@@ -60,7 +30,7 @@ export class EgRadar {
     };
 
     constructor(private _config: RadarConfig) {
-        this._styleConfig = merge({}, DEFAULT_CONFIG, _config.style,);
+        this._styleConfig = merge({}, DEFAULT_STYLE_CONFIG, _config.style,);
 
         this.rand = new PseudoRand(this._styleConfig.seed!);
 
@@ -188,6 +158,10 @@ export class EgRadar {
         };
     }
 
+    /**
+     * To reduce overlaping this function spreads entries in uniform grid of points in each sector and ring. 
+     * In case entries are more that grid points, will assign random points in the ring.
+     */
     private spreadEntries() {
         const grid = this.generateGrid();
         for (let entry of this.entries) {

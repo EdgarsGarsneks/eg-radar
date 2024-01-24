@@ -1,3 +1,6 @@
+/**
+ * Pseudo-random number generator. In order to have consistent results, the seed is used to initialize the generator.
+ */
 export class PseudoRand {
 
     constructor(private seed: number) { }

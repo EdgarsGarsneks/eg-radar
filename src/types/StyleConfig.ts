@@ -1,4 +1,5 @@
 export interface StyleConfig {
+    seed?: number;
     background?: string;
     lineColor?: string;
     font?: string;
@@ -8,23 +9,22 @@ export interface StyleConfig {
         fontSize?: number;
         textColor?: string;
     },
+    rings?: {
+        fontSize?: number;
+        showLabels?: boolean;
+        showCurvedLabels?: boolean;
+        showBackground?: boolean;
+    },
+    sectors?: {
+        fontSize?: number;
+        textColor?: string;
+        showLabels?: boolean;
+        highlight?: boolean;
+    },
     tooltip?: {
         enabled?: boolean;
         background?: string;
         textColor?: string;
         fontSize?: number;
-    },
-    rings?: {
-        showLabels?: boolean;
-        showCurvedLabels?: boolean;
-        showBackground?: boolean;
-        fontSize?: number;
-    },
-    sectors?: {
-        showLabels?: boolean;
-        highlight?: boolean;
-        textColor?: string;
-        fontSize?: number;
     }
-    seed?: number;
 }
