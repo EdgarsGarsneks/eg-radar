@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ## Description
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+A clear and concise description of what the problem/feature is. Ex. I'm always frustrated when [...]
 
 ## Expected Behavior
 A clear and concise description of what you want to happen.

@@ -9,12 +9,3 @@ export function toCartesian(r: number, theta: number) {
     let y = r * Math.sin(theta);
     return { x: x, y: y };
 }
-
-export function pipe(f1: Function, ...f2: Function[]) {
-    return (...args: any[]) => {
-        f1(...args);
-        for (let f of f2) {
-            f(...args);
-        }
-    }
-}

@@ -1,7 +1,6 @@
 import { EgRadar, RadarConfig } from "../src/EgRadar";
 import { toPolar } from "../src/Utils";
 
-
 let radarConfig: RadarConfig;
 
 describe('EgRadar entry layout', () => {
@@ -267,7 +266,7 @@ describe('EgRadar entry layout', () => {
                 r: 999
             }
         };
-        
+
         const radar = new EgRadar(radarConfig);
 
         expect(radar.style).toMatchObject({
@@ -279,4 +278,70 @@ describe('EgRadar entry layout', () => {
         });
     })
 
+    describe('Event listeners', () => {
+        let radar: EgRadar;
+        let entrySelectListener: Function;
+        let sectorSelectListener: Function;
+        let entryHoverListener: Function;
+        let entryHoverOutListener: Function;
+
+        beforeEach(() => {
+            radar = new EgRadar(radarConfig);
+
+            entrySelectListener = jest.fn();
+            sectorSelectListener = jest.fn();
+            entryHoverListener = jest.fn();
+            entryHoverOutListener = jest.fn();
+
+            radar.addEventListener('entrySelect', entrySelectListener);
+            radar.addEventListener('sectorSelect', sectorSelectListener);
+            radar.addEventListener('entryHover', entryHoverListener);
+            radar.addEventListener('entryHoverOut', entryHoverOutListener);
+        });
+
+        it('should trigger "entrySelect" event listeners when selectEntry is called', () => {
+            radar.selectEntry(radar.entries[0]);
+
+            expect(entrySelectListener).toHaveBeenCalled();
+            expect(entryHoverOutListener).not.toHaveBeenCalled();
+            expect(entryHoverListener).not.toHaveBeenCalled();
+        })
+
+        it('should trigger "sectorSelect" event listeners when selectEntry is called', () => {
+            radar.selectEntry(radar.entries[0]);
+
+            expect(entrySelectListener).toHaveBeenCalled();
+            expect(sectorSelectListener).toHaveBeenCalled();
+            expect(entryHoverOutListener).not.toHaveBeenCalled();
+            expect(entryHoverListener).not.toHaveBeenCalled();
+        })
+
+        it('should trigger "sectorSelect" event listeners when selectSector is called', () => {
+            radar.selectSector(radar.sectors[0]);
+
+            expect(sectorSelectListener).toHaveBeenCalled();
+            expect(entryHoverOutListener).not.toHaveBeenCalled();
+            expect(entryHoverListener).not.toHaveBeenCalled();
+            expect(entrySelectListener).not.toHaveBeenCalled();
+        })
+
+        it('should trigger "entryHover" event listeners when hoverEntry is called', () => {
+            radar.hoverEntry(radar.entries[0]);
+
+            expect(entryHoverListener).toHaveBeenCalled();
+            expect(entrySelectListener).not.toHaveBeenCalled();
+            expect(sectorSelectListener).not.toHaveBeenCalled();
+            expect(entryHoverOutListener).not.toHaveBeenCalled();
+        })
+
+        it('should trigger "entryHoverOut" event listeners when hoverEntryOut is called', () => {
+            radar.hoverEntryOut(radar.entries[0]);
+
+            expect(entryHoverOutListener).toHaveBeenCalled();
+            expect(entryHoverListener).not.toHaveBeenCalled();
+            expect(entrySelectListener).not.toHaveBeenCalled();
+            expect(sectorSelectListener).not.toHaveBeenCalled();
+        })
+
+    });
 });
